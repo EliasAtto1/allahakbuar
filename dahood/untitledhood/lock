@@ -1,0 +1,725 @@
+local NotifyLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/vKhonshu/intro/main/ui"))()
+NotifyLib.prompt('Allahu Akbar👑', 'W', 2)
+NotifyLib.prompt('Allahu Akbar👑', 'Son Them', 2)
+NotifyLib.prompt('Your Whitelisted🌠', 'W', 2)
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Allahu Akbar Hub🌠          Untitled/DaHood", "BloodTheme")
+local Tab = Window:NewTab("Allahu Akbar🌠 ")
+local a = Tab:NewSection("Allahu Akbar Aiming👑")
+local b = Tab:NewSection("Allahu Akbar Settings👑")
+local g = Tab:NewSection("Allahu Akbar Smooth Lock")
+local r = Tab:NewSection("Allahu Akbar Settings👑")
+a:NewButton("Allahu Akbar Lock👑", "Click to enable", function()
+NotifyLib.prompt('Enabled Allahu Akbar Lock?👑', 'ur better then everyone', 2)
+
+    local configs = { -- main aimlock settings
+    Main = {
+        Enabled = true,
+        Aimlockkey = "e",
+        Prediction = 0.246935,
+        Aimpart = 'HumanoidRootPart', -- Head, UpperTorso, HumanoidRootPart, LowerTorso
+        Notifications = true,
+        AirshotFunc = false
+
+    },
+    Tracer = {
+        TracerThickness = 3.5,
+        TracerTransparency = 1,
+        TracerColor = Color3.fromRGB(99,95,98)
+    }
+
+}
+
+local RunService = game:GetService("RunService")
+local CurrentCamera = game:GetService "Workspace".CurrentCamera
+local Mouse = game.Players.LocalPlayer:GetMouse()
+local inset = game:GetService("GuiService"):GetGuiInset().Y
+
+local Line = Drawing.new("Line")
+local Plr
+
+Mouse.KeyDown:Connect(function(KeyPressed)
+    if KeyPressed == (configs.Main.Aimlockkey) then
+        if configs.Main.Enabled == true then
+            configs.Main.Enabled = false
+            if configs.Main.Notifications == true then
+                Plr = FindClosestPlayer()
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Allahu Akbar Lock👑",
+                    Text = "unlocked",
+                })
+            end
+        else
+            Plr = FindClosestPlayer()
+            configs.Main.Enabled = true
+            if configs.Main.Notifications == true then
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Allahu Akbar Lock👑",
+                    Text = "locked: " .. tostring(LocalPlayer.Character.Humanoid.DisplayName),
+                })
+            end
+        end
+    end
+end)
+
+function FindClosestPlayer()
+    local closestPlayer
+    local shortestDistance = math.huge
+
+    for i, v in pairs(game.Players:GetPlayers()) do
+        if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and
+            v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") then
+            local pos = CurrentCamera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
+            if magnitude < shortestDistance then
+                closestPlayer = v
+                shortestDistance = magnitude
+            end
+        end
+    end
+    return closestPlayer
+end
+
+RunService.Stepped:connect(function()
+    if configs.Main.Enabled == true then
+        local Vector = CurrentCamera:worldToViewportPoint(Plr.Character[configs.Main.Aimpart].Position +
+                                                              (Plr.Character.HumanoidRootPart.Velocity *
+                                                                  configs.Main.Prediction))
+        Line.Color = configs.Tracer.TracerColor
+        Line.Thickness = configs.Tracer.TracerThickness
+        Line.Transparency = configs.Tracer.TracerTransparency
+
+        Line.From = Vector2.new(Mouse.X, Mouse.Y + inset)
+        Line.To = Vector2.new(Vector.X, Vector.Y)
+        Line.Visible = true
+    elseif configs.Main.Enabled == false then
+        Line.Visible = false
+    end
+end)
+
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = newcclosure(function(...)
+    local args = {...}
+    if configs.Main.Enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+        args[3] = Plr.Character[configs.Main.Aimpart].Position +
+                      (Plr.Character[configs.Main.Aimpart].Velocity * configs.Main.Prediction)
+        return old(unpack(args))
+    end
+    return old(...)
+end)
+
+if configs.Main.AirshotFunc == true then
+    if Plr.Character.Humanoid.Jump == true and Plr.Character.Humanoid.FloorMaterial == Enum.Material.Air then
+        settings.config.Part = "RightFoot"
+    else
+        Plr.Character:WaitForChild("Humanoid").StateChanged:Connect(function(old,new)
+            if new == Enum.HumanoidStateType.Freefall then
+                settings.config.Part = "RightFoot"
+            else
+                settings.config.Part = "LowerTorso"
+            end
+        end)
+    end
+end
+
+
+
+end)
+b:NewTextBox("Change Prediction", "E", function(bool)
+getgenv().Prediction = bool
+end)
+g:NewButton("Allahu Akbar Smooth Lock👑", "Click to enable", function()
+NotifyLib.prompt('Enabled Allahu Akbar Lock?👑', 'ur better then everyone', 2)
+getgenv().RecurringPoint = "UpperTorso"
+getgenv().Hitbox = "UpperTorso"
+getgenv().Keybind = "e"
+getgenv().AimbotStrengthAmount = 0.0335
+getgenv().PredictionAmount = 10
+getgenv().Radius = 25
+getgenv().UsePrediction = true
+getgenv().AimbotStrength = true
+getgenv().FirstPerson = true
+getgenv().ThirdPerson = true
+getgenv().TeamCheck = false
+getgenv().Enabled = true
+
+
+-- // main script use with silent aim / / -- 
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/tenaaki/GenericAimbot/main/v1.0.0"))()
+end)
+r:NewDropdown("RecurringPoint", "idk choose?", {"HumanoidRootPart", "Head", "UpperTorso", "RightHand", "LeftHand", "LeftLowerArm", "RightLowerArm"}, function(e)
+getgenv().RecurringPoint = e
+end)
+r:NewDropdown("HitBox", "idk choose?", {"HumanoidRootPart", "Head", "UpperTorso", "RightHand", "LeftHand", "LeftLowerArm", "RightLowerArm"}, function(e)
+getgenv().Hitbox = e
+end)
+r:NewTextBox("KeyBind", "e", function(value)
+getgenv().Keybind = value
+end)
+r:NewTextBox("AimbotStrengthAmount", "e", function(value)
+getgenv().AimbotStrengthAmount = value
+end)
+r:NewTextBox("PredictionAmount", "e", function(value)
+getgenv().PredictionAmount = value
+end)
+r:NewTextBox("Radius", "e", function(value)
+getgenv().Radius = value
+end)
+r:NewToggle("Use Prediction", "e", function(value)
+getgenv().UsePrediction = value
+end)
+r:NewToggle("Use AimbotStrength", "e", function(value)
+getgenv().AimbotStrength = value
+end)
+r:NewToggle("FirstPerson", "e", function(value)
+getgenv().FirstPerson = value
+end)
+r:NewToggle("ThirdPerson", "e", function(value)
+getgenv().ThirdPerson = value
+end)
+r:NewToggle("TeamCheck", "e", function(value)
+getgenv().TeamCheck = value
+end)
+r:NewToggle("Enabled/Disable", "e", function(value)
+getgenv().Enabled = value
+end)
+local Tab = Window:NewTab("Local Player❤️")
+local d = Tab:NewSection("Client Sided❤️")
+d:NewButton("Headless Client Sided", "e?", function()
+getgenv().game.Players.LocalPlayer.Character.Head.Transparency = 1
+    getgenv().game.Players.LocalPlayer.Character.Head.face:Destroy()
+    getgenv().game.Players.LocalPlayer.Character.Head.face:Destroy()
+end)
+d:NewButton("Korblox Right Leg Client Sided", "e?", function()
+local ply = game.Players.LocalPlayer
+	local chr = ply.Character
+	chr.RightLowerLeg.MeshId = "902942093"
+	chr.RightLowerLeg.Transparency = "1"
+	chr.RightUpperLeg.MeshId = "http://www.roblox.com/asset/?id=902942096"
+	chr.RightUpperLeg.TextureID = "http://roblox.com/asset/?id=902843398"
+	chr.RightFoot.MeshId = "902942089"
+	chr.RightFoot.Transparency = "1"
+end)
+d:NewButton("Korblox Left Leg Client Sided", "e?", function()
+local ply = game.Players.LocalPlayer
+local chr = ply.Character
+chr.LeftLowerLeg.MeshId = "101851582"
+chr.LeftLowerLeg.Transparency = "1"
+chr.LeftUpperLeg.MeshId = "http://www.roblox.com/asset/?id=101851582"
+chr.LeftUpperLeg.TextureID = "http://roblox.com/asset/?id=101851582"
+chr.LeftFoot.MeshId = "101851582"
+chr.LeftFoot.Transparency = "1"
+end)
+d:NewButton("Super Super Happy Face Client Sided", "e?", function()
+local L_409_ = game.Players.LocalPlayer.Character
+	local L_410_ = L_409_:WaitForChild("Head")
+	local L_411_ = L_410_:WaitForChild("face")
+	L_411_.Texture = "rbxassetid://494290547"
+end)
+d:NewButton("BeastMode Face Client Sided", "e?", function()
+	local L_412_ = game.Players.LocalPlayer.Character
+	local L_413_ = L_412_:WaitForChild("Head")
+	local L_414_ = L_413_:WaitForChild("face")
+	L_414_.Texture = "rbxassetid://127959433"
+end)
+d:NewButton("Playful Vampire Face Client Sided", "e?", function()
+    local L_415_ = game.Players.LocalPlayer.Character
+	local L_416_ = L_415_:WaitForChild("Head")
+	local L_417_ = L_416_:WaitForChild("face")
+	L_417_.Texture = "rbxassetid://2409281591"
+end)
+d:NewButton("Click To Reset", "e?", function()
+game.Players.LocalPlayer.Character.Humanoid.Health = 0
+end)
+local Tab = Window:NewTab("Miscs🥳")
+local c = Tab:NewSection("Miscs🥳")
+c:NewButton("Auto Clicker [V]", "e?", function()
+	getgenv().Settings = {
+		["Auto Click Keybind"] = "V", -- Use an UpperCase letter or KeyCode Enum. Ex: Enum.KeyCode.Semicolon
+		["Lock Mouse Position Keybind"] = "B",
+		["Right Click"] = false,
+		["GUI"] = false, -- A drawing gui that tells you what is going on with the autoclicker.
+		["Delay"] = 0 -- 0 for RenderStepped, other numbers go to regular wait timings.
+	}
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/tayodevelup/secretinsomniac/main/asdadas"))()
+end)
+c:NewButton("Fly [X]", "X?", function()
+	local L_143_ = game.Players.LocalPlayer
+	local L_144_ = L_143_:GetMouse()
+	localplayer = L_143_
+	if workspace:FindFirstChild("Core") then
+		workspace.Core:Destroy()
+	end
+	local L_145_ = Instance.new("Part")
+	L_145_.Name = "Core"
+	L_145_.Size = Vector3.new(0.05, 0.05, 0.05)
+	spawn(function()
+		L_145_.Parent = workspace
+		local L_152_ = Instance.new("Weld", L_145_)
+		L_152_.Part0 = L_145_
+		L_152_.Part1 = localplayer.Character.LowerTorso
+		L_152_.C0 = CFrame.new(0, 0, 0)
+	end)
+	workspace:WaitForChild("Core")
+	local L_146_ = workspace.Core
+	flying = true
+	local L_147_ = 25
+	local L_148_ = {
+		a = false,
+		d = false,
+		w = false,
+		s = false
+	}
+	local L_149_
+	local L_150_
+	local function L_151_func()
+		local L_153_ = Instance.new("BodyPosition", L_146_)
+		local L_154_ = Instance.new("BodyGyro", L_146_)
+		L_153_.Name = "EPIXPOS"
+		L_153_.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+		L_153_.position = L_146_.Position
+		L_154_.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+		L_154_.cframe = L_146_.CFrame
+		repeat
+			wait()
+			localplayer.Character.Humanoid.PlatformStand = true
+			local L_155_ = L_154_.cframe - L_154_.cframe.p + L_153_.position
+			if not L_148_.w and not L_148_.s and not L_148_.a and not L_148_.d then
+				L_147_ = 25
+			end
+			if L_148_.w then
+				L_155_ = L_155_ + workspace.CurrentCamera.CoordinateFrame.lookVector * L_147_
+				L_147_ = L_147_ + 0
+			end
+			if L_148_.s then
+				L_155_ = L_155_ - workspace.CurrentCamera.CoordinateFrame.lookVector * L_147_
+				L_147_ = L_147_ + 0
+			end
+			if L_148_.d then
+				L_155_ = L_155_ * CFrame.new(L_147_, 0, 0)
+				L_147_ = L_147_ + 0
+			end
+			if L_148_.a then
+				L_155_ = L_155_ * CFrame.new(-L_147_, 0, 0)
+				L_147_ = L_147_ + 0
+			end
+			if L_147_ > 10 then
+				L_147_ = 25
+			end
+			L_153_.position = L_155_.p
+			if L_148_.w then
+				L_154_.cframe = workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad(L_147_ * 0), 0, 0)
+			elseif L_148_.s then
+				L_154_.cframe = workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(math.rad(L_147_ * 0), 0, 0)
+			else
+				L_154_.cframe = workspace.CurrentCamera.CoordinateFrame
+			end
+		until flying == false
+		if L_154_ then
+			L_154_:Destroy()
+		end
+		if L_153_ then
+			L_153_:Destroy()
+		end
+		flying = false
+		localplayer.Character.Humanoid.PlatformStand = false
+		L_147_ = 25
+	end
+	L_149_ = L_144_.KeyDown:connect(function(L_156_arg0)
+		if not L_146_ or not L_146_.Parent then
+			flying = false
+			L_149_:disconnect()
+			L_150_:disconnect()
+			return
+		end
+		if L_156_arg0 == "w" then
+			L_148_.w = true
+		elseif L_156_arg0 == "s" then
+			L_148_.s = true
+		elseif L_156_arg0 == "a" then
+			L_148_.a = true
+		elseif L_156_arg0 == "d" then
+			L_148_.d = true
+		elseif L_156_arg0 == "x" then
+			if flying == true then
+				flying = false
+			else
+				flying = true
+				L_151_func()
+			end
+		end
+	end)
+	L_150_ = L_144_.KeyUp:connect(function(L_157_arg0)
+		if L_157_arg0 == "w" then
+			L_148_.w = false
+		elseif L_157_arg0 == "s" then
+			L_148_.s = false
+		elseif L_157_arg0 == "a" then
+			L_148_.a = false
+		elseif L_157_arg0 == "d" then
+			L_148_.d = false
+		end
+	end)
+	L_151_func()
+end)
+c:NewButton("No Recoil", "e?", function()
+	function isframework(L_158_arg0)
+		if tostring(L_158_arg0) == "Framework" then
+			return true
+		end
+		return false
+	end
+	function checkArgs(L_159_arg0, L_160_arg1)
+		if tostring(L_159_arg0):lower():find("camera") and tostring(L_160_arg1) == "CFrame" then
+			return true
+		end
+		return false
+	end
+	newindex = hookmetamethod(game, "__newindex", function(L_161_arg0, L_162_arg1, L_163_arg2)
+		local L_164_ = getcallingscript()
+		if isframework(L_164_) and checkArgs(L_161_arg0, L_162_arg1) then
+			return;
+		end
+		return newindex(L_161_arg0, L_162_arg1, L_163_arg2)
+	end)
+end)
+c:NewButton("Trash Talk", "e?", function()
+NotifyLib.prompt('Enabled Allahu Akbar Trash Talk', 'E To Trash Talk', 5)
+	local mouse = game.Players.LocalPlayer:GetMouse()
+	mouse.KeyDown:connect(function(key)
+		if key == "e" then
+			local Trash = {
+				'LOG OF SON',
+				'UR EZ',
+				'Sorry bout that',
+				'look at you kid',
+				'you look like a octupus',
+				'go cry kiddo',
+				'WHERE YO GOOFY AIM AT KIDDO',
+				'stay mad dog',
+				'IF I WERE U I WOULD LOG',
+				'FOCUS SON',
+				'SONNED',
+				'UR A MISTAKE TO UR PARENTS',
+				'your my seed son',
+				'your built like a giraffe goofy',
+				'ur brain is size of an atom which is very tiny',
+				'I OWN YOU SON',
+				'stay down doggy L bozo',
+				'go play adopt me kid',
+				'cry baby',
+				'go back to watching free robux videos',
+				'UR BAD',
+				'no cap u smell like rubbish',
+				'eat my foot kid',
+				'cry about it bozo',
+				'UR DOG',
+				'BRO UR BAD',
+				'SON',
+				'GET SONNED SON',
+			}
+			local random = Trash[math.random(1, #Trash)]
+			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(random, "All")
+		end
+	end)
+end)
+local Tab = Window:NewTab("Animations🥱")
+local m = Tab:NewSection("Animations🥱")
+m:NewButton("Cartoony", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=742637544"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=742638445"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=742640026"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=742638842"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=742637942"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=742636889"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=742637151"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Bubbly", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=910004836"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=910009958"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=910034870"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=910025107"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=910016857"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=910001910"
+	Animate.swimidle.SwimIdle.AnimationId = "http://www.roblox.com/asset/?id=910030921"
+	Animate.swim.Swim.AnimationId = "http://www.roblox.com/asset/?id=910028158"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Astronaut", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=891621366"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=891633237"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=891667138"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=891636393"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=891627522"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=891609353"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=891617961"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Elder", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=845397899"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=845400520"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=845403856"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=845386501"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=845398858"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=845392038"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=845396048"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Knight", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=657595757"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=657568135"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=657552124"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=657564596"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=658409194"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=658360781"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=657600338"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Mage", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=707742142"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=707855907"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=707897309"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=707861613"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=707853694"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=707826056"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Levitation", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616010382"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616003713"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Pirate", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=750781874"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=750782770"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=750785693"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=750783738"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=750782230"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=750779899"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=750780242"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Robot", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616088211"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616089559"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616095330"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616091570"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616090535"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616086039"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616087089"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("SuperHero", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616111295"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616113536"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616122287"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616117076"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616115533"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616104706"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616108001"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Toy", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+m:NewButton("Zombie", "ez", function()
+	local Animate = game.Players.LocalPlayer.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616158929"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616160636"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+	game.Players.LocalPlayer.Character.Humanoid.Jump = true
+end)
+local Tab = Window:NewTab("CFrame Speed⚡️")
+local r = Tab:NewSection("CFrame Speed⚡️")
+NotifyLib.prompt('Enabled Allahu Akbar CFrame Speed⚡️', 'N To Enable', 5)
+r:NewButton("CFrame Speed⚡️", "ez", function()
+	repeat
+		wait()
+	until game:IsLoaded()
+	local L_134_ = game:service('Players')
+	local L_135_ = L_134_.LocalPlayer
+	repeat
+		wait()
+	until L_135_.Character
+	local L_136_ = game:service('UserInputService')
+	local L_137_ = game:service('RunService')
+	getgenv().Multiplier = 0.5
+	local L_138_ = true
+	local L_139_
+	L_136_.InputBegan:connect(function(L_140_arg0)
+		if L_140_arg0.KeyCode == Enum.KeyCode.LeftBracket then
+			Multiplier = Multiplier + 0.01
+			print(Multiplier)
+			wait(0.2)
+			while L_136_:IsKeyDown(Enum.KeyCode.LeftBracket) do
+				wait()
+				Multiplier = Multiplier + 0.01
+				print(Multiplier)
+			end
+		end
+		if L_140_arg0.KeyCode == Enum.KeyCode.RightBracket then
+			Multiplier = Multiplier - 0.01
+			print(Multiplier)
+			wait(0.2)
+			while L_136_:IsKeyDown(Enum.KeyCode.RightBracket) do
+				wait()
+				Multiplier = Multiplier - 0.01
+				print(Multiplier)
+			end
+		end
+		if L_140_arg0.KeyCode == Enum.KeyCode.N then
+			L_138_ = not L_138_
+			if L_138_ == true then
+				repeat
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.Humanoid.MoveDirection * Multiplier
+					game:GetService("RunService").Stepped:wait()
+				until L_138_ == false
+			end
+		end
+	end)
+end)
+r:NewTextBox("Change Speed", "Type A Number", function(value)
+NotifyLib.prompt('Change Speed Value⚡️', '⚡️⚡️⚡️⚡️', 5)
+	getgenv().Multiplier = (value)
+end)
+local Tab = Window:NewTab("Spin Bot🤖")
+local t = Tab:NewSection("Spin Bot🤖")
+NotifyLib.prompt('Spin Bot🤖', 'T To Enable🤖', 5)
+t:NewButton("Lay Spint Bot", "ez", function()
+	local L_383_ = false
+	local L_384_ = game:GetService("UserInputService");
+	L_384_.InputBegan:Connect(function(L_385_arg0, L_386_arg1)
+		if (L_385_arg0.KeyCode == Enum.KeyCode.T and L_386_arg1 == false) then
+			if L_383_ == false then
+				L_383_ = true
+				wait()
+				getgenv().urspeed = 500
+				local L_387_ = game.Players.LocalPlayer.Character
+				while wait() do
+					L_387_.HumanoidRootPart.CFrame = L_387_.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(urspeed), 0)
+				end
+			else
+				L_383_ = false
+				getgenv().urspeed = 0
+			end
+		end
+	end);
+	game:GetService('RunService').Stepped:connect(function()
+		if L_383_ == true then
+			local L_388_ = Instance.new("Animation");
+			function stopTracks()
+				for L_389_forvar0, L_390_forvar1 in next, game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):GetPlayingAnimationTracks(
+    
+        ) do
+					if (L_390_forvar1.Animation.AnimationId:match("rbxassetid")) then
+						L_390_forvar1:Stop();
+					end;
+				end;
+			end;
+			function loadAnimation(L_391_arg0)
+				if L_388_.AnimationId == L_391_arg0 then
+					L_388_.AnimationId = "1";
+				else
+					L_388_.AnimationId = L_391_arg0;
+					local L_392_ =
+                game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):LoadAnimation(
+                L_388_
+            );
+					L_392_:Play();
+				end;
+			end;
+			loadAnimation("rbxassetid://3152378852");
+			wait(1.2)
+		end
+	end)
+	game:GetService('RunService').Stepped:connect(function()
+		if L_383_ == false then
+			stopTracks();
+		end
+	end)
+end)
+t:NewTextBox("Change Speed", "Type a number u like nigga", function(e)
+NotifyLib.prompt('Change Spin Bot Speed Value🤖', '🤖', 5)
+getgenv().urspeed = (e)
+end)
+local Tab = Window:NewTab("SET FPS CAP💎")
+local l = Tab:NewSection("SET FPS CAP💎")
+l:NewButton("Change FPS to 20", "Type a number u like nigga", function()
+setfpscap(10)
+end)
+l:NewButton("Change FPS to 20", "Type a number u like nigga", function()
+setfpscap(20)
+end)
+l:NewButton("Change FPS to 30", "Type a number u like nigga", function()
+setfpscap(30)
+end)
+l:NewButton("Change FPS to 40", "Type a number u like nigga", function()
+setfpscap(40)
+end)
+l:NewButton("Change FPS to 50", "Type a number u like nigga", function()
+setfpscap(50)
+end)
+l:NewButton("Change FPS to 60", "Type a number u like nigga", function()
+setfpscap(60)
+end)
+l:NewButton("Change FPS to 70", "Type a number u like nigga", function()
+setfpscap(70)
+end)
+l:NewButton("Change FPS to 80", "Type a number u like nigga", function()
+setfpscap(80)
+end)
+l:NewButton("Change FPS to 90", "Type a number u like nigga", function()
+setfpscap(90)
+end)
+l:NewButton("Change FPS to 100", "Type a number u like nigga", function()
+setfpscap(100)
+end)
+l:NewButton("Change FPS to 110", "Type a number u like nigga", function()
+setfpscap(110)
+end)
+l:NewButton("Change FPS to 120", "Type a number u like nigga", function()
+setfpscap(120)
+end)
+l:NewButton("Change FPS to 144", "Type a number u like nigga", function()
+setfpscap(144)
+end)
+l:NewButton("Change FPS to 240", "Type a number u like nigga", function()
+setfpscap(240)
+end)
+local Tab = Window:NewTab("GUI Settings⚙️")
+local Section = Tab:NewSection("GUI Settings⚙️")
+Section:NewKeybind("Toggle GUI", "e?", Enum.KeyCode.V, function()
+	Library:ToggleUI()
+end)
